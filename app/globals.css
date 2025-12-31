@@ -13,8 +13,9 @@
 body {
   overflow-x: hidden;
   scroll-behavior: smooth;
-  /* background-color: #C69DD2; */
+  @apply bg-black;
 }
+
 
 /* Tailwind @apply for custom classes */
 .editor-btn {
