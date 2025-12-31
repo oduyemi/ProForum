@@ -1,6 +1,5 @@
 "use client";
-
-import { MoreVertical, Trash, Edit } from "lucide-react";
+import { Trash, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {

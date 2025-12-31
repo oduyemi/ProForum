@@ -23,42 +23,30 @@ export const ReplyMessage = ({
 }: ReplyMessageProps) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="
-        flex gap-4
-        rounded-2xl
-        border border-[#C69DD230]
-        bg-[#0e0e0e]
-        p-5
-      "
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex gap-4 rounded-xl border bg-white p-4"
     >
-      {/* Votes */}
-      <Vote initialVotes={votes} />
+      <Vote initialVotes={votes} compact />
 
       <div className="flex-1">
         {/* Author */}
         <div className="flex items-center gap-3">
-          <Avatar
-            size="sm"
-            name={author}
-            src={avatarUrl}
-            bg="#C69DD230"
-            color="#C69DD2"
-          />
+          <Avatar.Root size="sm">
+            <Avatar.Image src={avatarUrl} alt={author} />
+            <Avatar.Fallback>
+              {author.charAt(0).toUpperCase()}
+            </Avatar.Fallback>
+          </Avatar.Root>
 
           <div>
-            <p className="text-sm font-medium text-white">
-              {author}
-            </p>
-            <p className="text-xs text-gray-500">
-              {createdAt}
-            </p>
+            <p className="text-sm font-medium">{author}</p>
+            <p className="text-xs text-muted-foreground">{createdAt}</p>
           </div>
         </div>
 
         {/* Content */}
-        <p className="mt-4 text-sm leading-relaxed text-gray-300">
+        <p className="mt-3 text-sm leading-relaxed text-gray-700">
           {content}
         </p>
       </div>

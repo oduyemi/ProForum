@@ -1,44 +1,36 @@
 "use client";
-
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { ChevronUp, ChevronDown } from "lucide-react";
 
-export const Vote = ({ initialVotes }: { initialVotes: number }) => {
+interface VoteProps {
+  initialVotes: number;
+  compact?: boolean;
+}
+
+
+export const Vote = ({ initialVotes, compact = false }: VoteProps) => {
   const [votes, setVotes] = useState(initialVotes);
-  const [isPending, startTransition] = useTransition();
-
-  const vote = (delta: number) => {
-    setVotes((v) => v + delta);
-
-    startTransition(async () => {
-      try {
-        // await voteAction(delta)
-      } catch {
-        setVotes((v) => v - delta); // rollback
-      }
-    });
-  };
 
   return (
-    <div className="flex flex-col items-center text-gray-400">
+    <div
+      className={`flex items-center ${
+        compact ? "flex-col gap-1 text-xs" : "flex-col gap-2"
+      }`}
+    >
       <button
-        disabled={isPending}
-        onClick={() => vote(1)}
-        className="hover:text-yellow-400"
+        onClick={() => setVotes((v) => v + 1)}
+        className="text-gray-400 hover:text-yellow-400"
       >
-        <ChevronUp />
+        <ChevronUp size={compact ? 14 : 18} />
       </button>
 
-      <span className="text-sm font-medium text-white">
-        {votes}
-      </span>
+      <span className="font-medium">{votes}</span>
 
       <button
-        disabled={isPending}
-        onClick={() => vote(-1)}
-        className="hover:text-yellow-400"
+        onClick={() => setVotes((v) => v - 1)}
+        className="text-gray-400 hover:text-yellow-400"
       >
-        <ChevronDown />
+        <ChevronDown size={compact ? 14 : 18} />
       </button>
     </div>
   );

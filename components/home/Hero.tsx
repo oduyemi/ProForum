@@ -46,7 +46,6 @@ export const Hero = () => {
             >
                 <Button
                     size="lg"
-                    href="/forum"
                     className="gap-2 bg-yellow-400 text-black hover:bg-yellow-300 shadow-lg"
                 >
                     Join the Forum
@@ -55,7 +54,7 @@ export const Hero = () => {
             </Link>
 
             <Link
-                href="discussions"
+                href="/discussions"
                 rel="noopener noreferrer"
             >
                 <Button

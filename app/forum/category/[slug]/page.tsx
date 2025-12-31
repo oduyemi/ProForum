@@ -1,6 +1,7 @@
 import { ThreadCard } from "@/components/forum/ThreadCard";
 import { Box, Heading, Text } from "@chakra-ui/react";
 
+
 interface CategoryPageProps {
   params: {
     slug: string;
