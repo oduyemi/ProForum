@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ForumSidebar } from "@/components/forum/Sidebar";
 
 export default function ForumLayout({ children }: { children: ReactNode }) {
@@ -8,17 +9,25 @@ export default function ForumLayout({ children }: { children: ReactNode }) {
       {/* Header */}
       <header className="border-b border-[#C69DD220]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            href="/forum"
-            className="text-lg font-semibold hover:text-[#C69DD2]"
-          >
-            ProGrowing Forum
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/logo.png"
+              alt="ProForum logo"
+              width={200}
+              height={60}
+              priority
+            />
           </Link>
 
           <nav className="flex items-center gap-5 text-sm text-gray-400">
             <Link href="/forum" className="hover:text-white">
               Threads
             </Link>
+
+            <Link href="/discussions" className="hover:text-white">
+              Discussions
+            </Link>
+
             <Link
               href="/forum/create"
               className="text-yellow-400 hover:text-yellow-300"
