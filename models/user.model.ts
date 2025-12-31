@@ -2,7 +2,8 @@ import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
-  name: string;
+  fname: string;
+  lname: string;
   username: string;
   email: string;
   password: string;
@@ -11,6 +12,9 @@ export interface IUser extends Document {
   expertise: string[];
   reputation?: number;
   isBanned: boolean;
+  emailVerified: boolean;
+  profileCompleted: boolean;
+  verificationCode?: string;
   lastLogin?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -18,7 +22,15 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    fname: { 
+      type: String, 
+      required: true 
+    },
+
+    lname: { 
+      type: String, 
+      required: true 
+    },
 
     username: {
       type: String,
@@ -31,6 +43,8 @@ const userSchema = new Schema<IUser>(
       type: String,
       unique: true,
       index: true,
+      lowercase: true,
+      trim: true,
       required: [true, "email is required"],
     },
 
@@ -60,6 +74,18 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+
+    emailVerified: { 
+      type: Boolean, 
+      default: false 
+    },
+
+    profileCompleted: { 
+      type: Boolean, 
+      default: false 
+    },
+
+    verificationCode: { type: String },
 
     lastLogin: Date,
   },
