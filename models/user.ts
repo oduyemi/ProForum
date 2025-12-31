@@ -1,10 +1,38 @@
-import { Schema, model, models, Types } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
-const UserSchema = new Schema(
+export interface IUser extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  username: string;
+  email: string;
+  image?: string;
+  role: "user" | "trusted" | "mentor" | "admin";
+  expertise: string[];
+  reputation: number;
+  isBanned: boolean;
+  lastLogin?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>(
   {
     name: { type: String, required: true },
-    username: { type: String, unique: true, index: true },
-    email: { type: String, unique: true, index: true },
+
+    username: {
+      type: String,
+      unique: true,
+      index: true,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      unique: true,
+      index: true,
+      required: true,
+    },
+
     image: String,
 
     role: {
@@ -13,12 +41,25 @@ const UserSchema = new Schema(
       default: "user",
     },
 
-    expertise: [String], // ["frontend", "devops", "data"]
-    reputation: { type: Number, default: 0 },
+    expertise: [String],
 
-    isBanned: { type: Boolean, default: false },
+    reputation: {
+      type: Number,
+      default: 0,
+    },
+
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
+
+    lastLogin: Date,
   },
   { timestamps: true }
 );
 
-export default models.User || model("User", UserSchema);
+const User =
+  mongoose.models.User ||
+  mongoose.model<IUser>("User", userSchema);
+
+export default User;

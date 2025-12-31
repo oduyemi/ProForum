@@ -1,16 +1,56 @@
-import { Schema, model, models, Types } from "mongoose";
+import mongoose, { Schema, Types, Document } from "mongoose";
 
-const ReplySchema = new Schema(
+export interface IReply extends Document {
+  _id: Types.ObjectId;
+  body: string;
+  author: Types.ObjectId;
+  thread: Types.ObjectId;
+  parent?: Types.ObjectId | null;
+  isAccepted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const replySchema = new Schema<IReply>(
   {
-    body: { type: String, required: true }, // markdown
-    author: { type: Types.ObjectId, ref: "User", required: true },
-    thread: { type: Types.ObjectId, ref: "Thread", required: true },
+    body: {
+      type: String,
+      required: true,
+    },
 
-    parent: { type: Types.ObjectId, ref: "Reply", default: null },
+    author: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
 
-    isAccepted: { type: Boolean, default: false },
+    thread: {
+      type: Types.ObjectId,
+      ref: "Thread",
+      required: true,
+      index: true,
+    },
+
+    parent: {
+      type: Types.ObjectId,
+      ref: "Reply",
+      default: null,
+    },
+
+    isAccepted: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
 
-export default models.Reply || model("Reply", ReplySchema);
+// Common query patterns
+replySchema.index({ thread: 1, createdAt: 1 });
+
+const Reply =
+  mongoose.models.Reply ||
+  mongoose.model<IReply>("Reply", replySchema);
+
+export default Reply;

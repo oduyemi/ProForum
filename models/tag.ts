@@ -1,8 +1,32 @@
-import { Schema, model, models } from "mongoose";
+import mongoose, { Types, Schema, Document } from "mongoose";
 
-const TagSchema = new Schema({
-  name: { type: String, unique: true },
-  slug: { type: String, unique: true },
-});
+export interface ITag extends Document {
+  _id: Types.ObjectId;
+  name: string;
+  slug: string;
+}
 
-export default models.Tag || model("Tag", TagSchema);
+const tagSchema = new Schema<ITag>(
+  {
+    name: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+    },
+
+    slug: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+    },
+  },
+  { timestamps: false }
+);
+
+const Tag =
+  mongoose.models.Tag ||
+  mongoose.model<ITag>("Tag", tagSchema);
+
+export default Tag;

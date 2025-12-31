@@ -1,15 +1,52 @@
-import { Schema, model, models, Types } from "mongoose";
+import mongoose, { Schema, Types, Document } from "mongoose";
 
-const ReportSchema = new Schema(
+export interface IReport extends Document {
+  _id: Types.ObjectId;
+  reporter: Types.ObjectId;
+  targetId: Types.ObjectId;
+  targetType: "thread" | "reply";
+  reason: string;
+  resolved: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const reportSchema = new Schema<IReport>(
   {
-    reporter: { type: Types.ObjectId, ref: "User" },
-    targetId: { type: Types.ObjectId },
-    targetType: { type: String, enum: ["thread", "reply"] },
+    reporter: {
+      type: Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
-    reason: String,
-    resolved: { type: Boolean, default: false },
+    targetId: {
+      type: Types.ObjectId,
+      required: true,
+      index: true,
+    },
+
+    targetType: {
+      type: String,
+      enum: ["thread", "reply"],
+      required: true,
+    },
+
+    reason: {
+      type: String,
+      required: true,
+    },
+
+    resolved: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   { timestamps: true }
 );
 
-export default models.Report || model("Report", ReportSchema);
+const Report =
+  mongoose.models.Report ||
+  mongoose.model<IReport>("Report", reportSchema);
+
+export default Report;
