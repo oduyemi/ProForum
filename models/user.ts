@@ -5,10 +5,11 @@ export interface IUser extends Document {
   name: string;
   username: string;
   email: string;
+  password: string;
   image?: string;
   role: "user" | "trusted" | "mentor" | "admin";
   expertise: string[];
-  reputation: number;
+  reputation?: number;
   isBanned: boolean;
   lastLogin?: Date;
   createdAt: Date;
@@ -23,14 +24,20 @@ const userSchema = new Schema<IUser>(
       type: String,
       unique: true,
       index: true,
-      required: true,
+      required: [true, "username is required"],
     },
 
     email: {
       type: String,
       unique: true,
       index: true,
-      required: true,
+      required: [true, "email is required"],
+    },
+
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [8, "Password must be at least 8 characters"],
     },
 
     image: String,
@@ -39,6 +46,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: ["user", "trusted", "mentor", "admin"],
       default: "user",
+      required: [true, "role is required"],
     },
 
     expertise: [String],
