@@ -1,6 +1,6 @@
 /* eslint-disable */
 "use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { FC, createContext, useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import type { SafeUser } from "@/actions/user.action";
@@ -26,7 +26,7 @@ export const useUser = (): UserContextType => {
   return context;
 };
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<SafeUser | null>(null);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();

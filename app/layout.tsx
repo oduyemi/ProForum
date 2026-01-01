@@ -3,6 +3,7 @@ import ClientSideLayout from "./ClientSideLayout";
 import { Providers } from "./providers";
 import "./globals.css";
 import "animate.css";
+import { UserProvider } from "@/context/Usercontext";
 
 export const metadata = {
   title: "Forum | ProGrowing",
@@ -15,7 +16,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <Providers>
-          <ClientSideLayout>{children}</ClientSideLayout>
+          <UserProvider>
+            <ClientSideLayout>
+              {children}
+            </ClientSideLayout>
+          </UserProvider>
         </Providers>
       </body>
     </html>

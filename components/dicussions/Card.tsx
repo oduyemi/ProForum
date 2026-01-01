@@ -35,7 +35,7 @@ export const DiscussionCard = ({
         aria-label="View discussion"
       />
 
-      <div className="relative z-10 bg-[#0e0e0e] border border-[#C69DD220] rounded-2xl p-5 hover:border-[#C69DD2]/40 transition">
+      <div className="relative z-10 bg-[#0e0e0e] border border-[#C69DD220] rounded-2xl p-5 hover:border-[#C69DD2]/40 transition mb-3">
         <p className="text-sm text-gray-300 leading-relaxed mb-4">
           {content}
         </p>
