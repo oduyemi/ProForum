@@ -18,7 +18,7 @@ export function LoginForm() {
       try {
         const user = await loginUser(email, password);
         setUser(user);
-        window.location.replace("/forum");
+        window.location.replace("/discusions");
       } catch (err: any) {
         setError(err.message);
       }
