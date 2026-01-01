@@ -1,20 +1,24 @@
 import { ReactNode } from "react";
 import { ForumShell } from "@/components/forum/ForumShell";
 
-export default function ForumLayout({ children }: { children: ReactNode }) {
+export default function DiscussionsLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   return (
     <ForumShell
       navItems={[
-        { label: "Threads", href: "/forum" },
         { label: "Discussions", href: "/discussions" },
+        { label: "Threads", href: "/forum" },
         {
-          label: "New Thread",
-          href: "/forum/create",
+          label: "New Story",
+          href: "/discussions/create",
           highlight: true,
         },
       ]}
     >
-      {children}
+      <div className="space-y-8">{children}</div>
     </ForumShell>
   );
 }
