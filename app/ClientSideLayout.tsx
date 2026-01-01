@@ -1,8 +1,8 @@
 "use client";
-
 import { ReactNode, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Box } from "@chakra-ui/react";
+
 
 export default function ClientSideLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
