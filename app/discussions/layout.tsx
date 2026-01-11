@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode, useMemo } from "react";
-import { ForumShell } from "@/components/forum/ForumShell";
+import { ForumShell, type ForumNavItem } from "@/components/forum/ForumShell";
 import { useUser } from "@/context/Usercontext";
 import { LogOut } from "lucide-react";
 
@@ -10,9 +10,8 @@ export default function DiscussionsLayout({
   children: ReactNode;
 }) {
   const { user } = useUser();
-
-  const navItems = useMemo(() => {
-    const items = [
+  const navItems: ForumNavItem[] = useMemo(() => {
+    const items: ForumNavItem[] = [
       { label: "Discussions", href: "/discussions" },
       { label: "Threads", href: "/forum" },
       {
@@ -27,7 +26,7 @@ export default function DiscussionsLayout({
         href: "/logout",
         icon: LogOut,
         ariaLabel: "Logout",
-      });      
+      });
     }
 
     return items;

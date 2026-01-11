@@ -16,6 +16,7 @@ interface ProfileResponse {
 
 export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const { setUser } = useUser();
@@ -24,6 +25,7 @@ export function LoginForm() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setSuccess(false);
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -33,16 +35,18 @@ export function LoginForm() {
     try {
       await loginUser(email, password);
 
-      // 🔑 fetch profile AFTER login
       const res = await axios.get<ProfileResponse>(
         "/api/user/profile",
         { withCredentials: true }
       );
 
       setUser(res.data.user);
-      router.push("/discussions");
-    } catch (err) {
-      setError("Login failed");
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/discussions");
+      }, 900);
+    } catch {
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -55,7 +59,8 @@ export function LoginForm() {
         type="email"
         placeholder="Email"
         required
-        className="w-full rounded-lg bg-black border border-[#C69DD220] px-3 py-2 text-sm mb-3"
+        disabled={loading || success}
+        className="w-full rounded-lg bg-black border border-[#C69DD220] px-3 py-2 text-sm mb-3 disabled:opacity-60"
       />
 
       <input
@@ -63,17 +68,24 @@ export function LoginForm() {
         type="password"
         placeholder="Password"
         required
-        className="w-full rounded-lg bg-black border border-[#C69DD220] px-3 py-2 text-sm mb-3"
+        disabled={loading || success}
+        className="w-full rounded-lg bg-black border border-[#C69DD220] px-3 py-2 text-sm mb-3 disabled:opacity-60"
       />
 
       {error && <p className="text-xs text-red-400">{error}</p>}
 
+      {success && (
+        <p className="text-xs text-green-400">
+          Login successful. Redirecting…
+        </p>
+      )}
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || success}
         className="w-full rounded-lg bg-yellow-400 py-2 text-black font-medium disabled:opacity-50"
       >
-        {loading ? "Signing in…" : "Sign in"}
+        {loading ? "Signing in…" : success ? "Success" : "Sign in"}
       </button>
     </form>
   );
