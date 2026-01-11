@@ -1,12 +1,26 @@
+"use client";
 import { DiscussionCard } from "@/components/dicussions/Card";
 import { CommentInput } from "@/components/dicussions/CommentInput";
 import { CommentList } from "@/components/dicussions/CommentList";
+import { useUser } from "@/context/Usercontext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface PageProps {
   params: { id: string };
 }
 
 export default function DiscussionDetailPage({ params }: PageProps) {
+  const { user, loading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user]);
+
+  if (loading) return null;
     const discussion = {
         id: params.id,
         author: {

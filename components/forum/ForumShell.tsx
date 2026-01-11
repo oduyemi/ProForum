@@ -2,12 +2,17 @@ import { ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ForumSidebar } from "@/components/forum/Sidebar";
+import type { LucideIcon } from "lucide-react";
 
 export type ForumNavItem = {
-  label: string;
   href: string;
+  label?: string;         
   highlight?: boolean;
+  icon?: LucideIcon;       
+  ariaLabel?: string;      
 };
+
+
 
 interface ForumShellProps {
   children: ReactNode;
@@ -35,13 +40,18 @@ export function ForumShell({ children, navItems }: ForumShellProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={
-                  item.highlight
-                    ? "text-yellow-400 hover:text-yellow-300"
-                    : "hover:text-white"
-                }
+                aria-label={item.ariaLabel ?? item.label}
+                className={`flex items-center gap-2 hover:text-white ${
+                  item.highlight ? "text-yellow-400 hover:text-yellow-300" : ""
+                }`}
               >
-                {item.label}
+                {item.icon && (
+                  <item.icon className="h-5 w-5" />
+                )}
+
+                {item.label && (
+                  <span className="hidden sm:inline">{item.label}</span>
+                )}
               </Link>
             ))}
           </nav>

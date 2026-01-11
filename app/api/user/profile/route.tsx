@@ -1,47 +1,38 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
-import { dbConnect } from "@/utils/db";
 import User from "@/models/user.model";
+import { dbConnect } from "@/utils/db";
 
-export async function GET() {
-  await dbConnect();
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-  const cookieStore = await cookies(); // ✅ MUST be awaited
-  const token = cookieStore.get("token")?.value;
+interface JwtPayload {
+  id: string;
+  role: "user" | "trusted" | "mentor" | "admin";
+}
 
-  if (!token) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export async function GET(req: NextRequest) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-      id: string;
-    };
+    await dbConnect();
 
-    const user = await User.findById(decoded.id).select("-password");
-
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    return NextResponse.json({
-      user: {
-        _id: user._id,
-        fname: user.fname,
-        lname: user.lname,
-        username: user.username,
-        email: user.email,
-        image: user.image,
-        role: user.role,
-        expertise: user.expertise,
-        reputation: user.reputation,
-        emailVerified: user.emailVerified,
-        profileCompleted: user.profileCompleted,
-        lastLogin: user.lastLogin,
-      },
-    });
-  } catch {
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    ) as JwtPayload;
+
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    return NextResponse.json({ user });
+  } catch (err) {
+    console.error("PROFILE ERROR:", err);
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 }

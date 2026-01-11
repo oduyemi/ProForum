@@ -2,7 +2,7 @@ import { AuthLayout } from "@/components/auth/Layout";
 import { LoginForm } from "@/components/auth/LoginForm";
 import Link from "next/link";
 
-export default function LoginPage() {
+export default function Login() {
   return (
     <AuthLayout
       title="Welcome back"

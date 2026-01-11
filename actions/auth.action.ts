@@ -1,24 +1,17 @@
 /* eslint-disable */
-import axios from 'axios';
-import { SafeUser } from './user.action';
+import axios from "axios";
 
-interface LoginResponse {
-  user: SafeUser;
+
+
+
+export async function loginUser(email: string, password: string) {
+  const res = await axios.post(
+    "/api/auth/login",
+    { email, password },
+    { withCredentials: true }
+  );
+  return res.data;
 }
-
-export async function loginUser(email: string, password: string): Promise<SafeUser> {
-  try {
-    const res = await axios.post<LoginResponse>(
-      "/api/auth/login",
-      { email, password },
-      { withCredentials: true }
-    );
-    return res.data.user; // ✅ TypeScript now knows `res.data.user` is SafeUser
-  } catch (error: any) {
-    throw new Error(error.response?.data?.error || "Login failed");
-  }
-}
-
 
 
 export const logout = async () => {
@@ -26,6 +19,8 @@ export const logout = async () => {
     method: "POST",
     credentials: "include",
   });
-
-  window.location.replace("/login");
 };
+
+
+
+

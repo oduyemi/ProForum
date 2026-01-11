@@ -1,14 +1,8 @@
-/* eslint-disable */
 "use client";
-import { FC, createContext, useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+
+import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import type { SafeUser } from "@/actions/user.action";
-
-
-interface ProfileResponse {
-  user: SafeUser;
-}
 
 interface UserContextType {
   user: SafeUser | null;
@@ -16,39 +10,30 @@ interface UserContextType {
   setUser: React.Dispatch<React.SetStateAction<SafeUser | null>>;
 }
 
+interface ProfileResponse {
+  user: SafeUser;
+}
+
+
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const useUser = (): UserContextType => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
+export const useUser = () => {
+  const ctx = useContext(UserContext);
+  if (!ctx) throw new Error("useUser must be used within UserProvider");
+  return ctx;
 };
 
-export const UserProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<SafeUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const pathname = usePathname();
-
+  
   useEffect(() => {
-    if (pathname === "/") {
-      setLoading(false);
-      return;
-    }
-
-    if (user) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchProfile = async () => {
+    const loadSession = async () => {
       try {
         const res = await axios.get<ProfileResponse>(
           "/api/user/profile",
           { withCredentials: true }
         );
-
         setUser(res.data.user);
       } catch {
         setUser(null);
@@ -56,9 +41,10 @@ export const UserProvider: FC<{ children: React.ReactNode }> = ({ children }) =>
         setLoading(false);
       }
     };
-
-    fetchProfile(); 
-  }, [pathname, user]);
+  
+    loadSession();
+  }, []);
+  
 
   return (
     <UserContext.Provider value={{ user, loading, setUser }}>

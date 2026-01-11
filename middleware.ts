@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyToken } from "@/utils/auth";
+import { jwtVerify } from "jose";
 
-export function middleware(req: NextRequest) {
+const PROTECTED_ROUTES = ["/discussions", "/profile"];
+const ADMIN_ROUTES = ["/admin"];
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname.startsWith("/discussions")) {
-    const token = req.cookies.get("token")?.value;
+  const token = req.cookies.get("token")?.value;
 
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  const isProtected = PROTECTED_ROUTES.some((r) => pathname.startsWith(r));
+  const isAdmin = ADMIN_ROUTES.some((r) => pathname.startsWith(r));
 
-    try {
-      verifyToken(token);
-      return NextResponse.next();
-    } catch {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
+  if (!isProtected && !isAdmin) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
-}
+  if (!token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
 
-export const config = {
-  matcher: ["/discussions/:path*"],
-};
+  try {
+    const { payload } = await jwtVerify(token, secret);
+
+    if (isAdmin && payload.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    return NextResponse.next();
+  } catch {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+}

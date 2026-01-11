@@ -4,8 +4,8 @@ import { DiscussionFeed } from "@/components/dicussions/Feed";
 import { discussions } from "@/lib/discussions";
 import { groupDiscussionsByDay } from "@/lib/groupDiscussions";
 
-export default function DiscussionsPage() {
-  const grouped = groupDiscussionsByDay(discussions);
+export default function DiscussionsWa() {
+    const grouped = groupDiscussionsByDay(discussions);
 
   return (
     <div>
