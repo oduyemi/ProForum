@@ -39,12 +39,6 @@ const threadSchema = new Schema<IThread>(
       },
     ],
 
-    skillLevel: {
-      type: String,
-      enum: ["beginner", "intermediate", "advanced"],
-      default: "beginner",
-    },
-
     views: { type: Number, default: 0 },
 
     isPinned: { type: Boolean, default: false },
