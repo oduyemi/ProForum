@@ -1,8 +1,10 @@
 "use client";
+
 import { useState } from "react";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,7 +67,7 @@ export default function CreateThreadPage() {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Be clear and specific"
-            className="bg-[#0b0b0b] border-[#C69DD230] text-white mb-2"
+            className="bg-[#0b0b0b] border-[#C69DD230] text-white"
           />
         </Box>
 
@@ -79,7 +81,7 @@ export default function CreateThreadPage() {
             onChange={(e) => setContent(e.target.value)}
             placeholder="Share context, constraints, and what you've tried..."
             rows={8}
-            className="bg-[#0b0b0b] border-[#C69DD230] text-white mb-2"
+            className="bg-[#0b0b0b] border-[#C69DD230] text-white"
           />
         </Box>
 
@@ -97,7 +99,7 @@ export default function CreateThreadPage() {
                   flex w-full items-center justify-between
                   rounded-md border border-[#C69DD230]
                   bg-[#0b0b0b] px-3 py-2 text-sm text-white
-                  hover:border-[#C69DD260] mb-2
+                  hover:border-[#C69DD260]
                 "
               >
                 {categories.length > 0

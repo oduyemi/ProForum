@@ -1,168 +1,75 @@
-"use client";
-import { useState } from "react";
-import {
-  Box,
-  Heading,
-  Text,
-  Input,
-  Textarea,
-  Checkbox,
-  CheckboxGroup,
-} from "@chakra-ui/react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { CATEGORY, TAG } from "@/lib/constants/forum";
+import Link from "next/link";
+import { ThreadList } from "@/components/forum/ThreadList";
+import { Box, Heading, Text } from "@chakra-ui/react";
 
-export default function CreateThreadPage() {
-  const router = useRouter();
+async function getThreads() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/forum/threads`,
+    { cache: "no-store" }
+  );
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
+  if (!res.ok) return [];
 
-  const isDisabled =
-    !title.trim() ||
-    !content.trim() ||
-    categories.length === 0;
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+export default async function ForumWa() {
+  const threads = await getThreads();
 
   return (
-    <Box maxW="780px" mx="auto">
-      {/* Header */}
-      <Box mb={12}>
-        <Heading size="lg" mb={3}>
-          Start a new discussion
-        </Heading>
-        <Text fontSize="sm" color="gray.400" maxW="520px">
-          Select all categories and tags that best describe your discussion.
-        </Text>
-      </Box>
-
-      {/* Card */}
-      <Box
-        bg="#0e0e0e"
-        border="1px solid #C69DD230"
-        borderRadius="2xl"
-        p={10}
-        className="space-y-10"
-      >
-        {/* Title */}
-        <Box>
-          <Text mb={2} fontSize="sm" color="gray.200">
-            Thread title
+    <main className="min-h-screen bg-black text-white">
+      <Box maxW="900px" mx="auto" px={4} py={14}>
+        {/* Header */}
+        <Box mb={12}>
+          <Heading size="lg" mb={3}>
+            ProGrowing Forum
+          </Heading>
+          <Text fontSize="sm" color="gray.400">
+            Learn publicly. Share honestly. Grow intentionally.
           </Text>
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Clear, specific, searchable"
-            bg="#0b0b0b"
-            borderColor="#C69DD230"
-            _hover={{ borderColor: "#C69DD260" }}
-            _focus={{ borderColor: "#C69DD2" }}
-          />
         </Box>
 
-        {/* Content */}
-        <Box>
-          <Text mb={2} fontSize="sm" color="gray.200">
-            Details
-          </Text>
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Context, constraints, examples, what you've tried…"
-            rows={8}
-            bg="#0b0b0b"
-            borderColor="#C69DD230"
-            _hover={{ borderColor: "#C69DD260" }}
-            _focus={{ borderColor: "#C69DD2" }}
-          />
-        </Box>
-
-        {/* Categories */}
-        <Box>
-          <Text mb={3} fontSize="sm" color="gray.200">
-            Categories <span className="text-red-400">*</span>
-          </Text>
-
+        {/* Feed */}
+        {threads.length === 0 ? (
           <Box
-            bg="#0b0b0b"
-            border="1px solid #C69DD230"
-            borderRadius="xl"
-            p={5}
+            py={20}
+            px={6}
+            textAlign="center"
+            border="1px dashed #C69DD230"
+            borderRadius="2xl"
+            bg="#0e0e0e"
           >
-            <CheckboxGroup
-              value={categories}
-              onChange={(v) => setCategories(v as string[])}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {CATEGORY.map((c) => (
-                  <Checkbox
-                    key={c.value}
-                    value={c.value}
-                    colorScheme="yellow"
-                  >
-                    {c.label}
-                  </Checkbox>
-                ))}
-              </div>
-            </CheckboxGroup>
+            <Heading size="md" mb={3}>
+              Start the first conversation
+            </Heading>
+
+            <Text fontSize="sm" color="gray.400" mb={6} maxW="420px" mx="auto">
+              Every great community starts with a single question or experience.
+              Share what you’re learning or struggling with.
+            </Text>
+
+            <Link href="/forum/create">
+              <span
+                className="
+                  inline-flex items-center justify-center
+                  px-5 py-2.5
+                  rounded-lg
+                  bg-yellow-400
+                  text-black
+                  font-medium
+                  hover:bg-yellow-300
+                  transition
+                "
+              >
+                Start a Conversation
+              </span>
+            </Link>
           </Box>
-
-          <Text mt={2} fontSize="xs" color="gray.500">
-            Choose one or more relevant domains.
-          </Text>
-        </Box>
-
-        {/* Tags */}
-        <Box>
-          <Text mb={3} fontSize="sm" color="gray.200">
-            Tags <span className="text-gray-500">(optional)</span>
-          </Text>
-
-          <Box
-            bg="#0b0b0b"
-            border="1px solid #C69DD230"
-            borderRadius="xl"
-            p={5}
-          >
-            <CheckboxGroup
-              value={tags}
-              onChange={(v) => setTags(v as string[])}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                {TAG.map((tag) => (
-                  <Checkbox
-                    key={tag.value}
-                    value={tag.value}
-                    colorScheme="yellow"
-                  >
-                    {tag.label}
-                  </Checkbox>
-                ))}
-              </div>
-            </CheckboxGroup>
-          </Box>
-        </Box>
-
-        {/* Actions */}
-        <div className="flex justify-end gap-3 pt-6 border-t border-[#C69DD220]">
-          <Button
-            variant="outline"
-            className="border-gray-600 text-gray-300"
-            onClick={() => router.back()}
-          >
-            Cancel
-          </Button>
-
-          <Button
-            disabled={isDisabled}
-            className="bg-yellow-400 text-black hover:bg-yellow-300 disabled:opacity-60"
-          >
-            Publish
-          </Button>
-        </div>
+        ) : (
+          <ThreadList threads={threads} />
+        )}
       </Box>
-    </Box>
+    </main>
   );
 }
