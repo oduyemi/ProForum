@@ -1,63 +1,56 @@
-import { ThreadCard } from "@/components/forum/ThreadCard";
+import { ThreadList } from "@/components/forum/ThreadList";
 import { Box, Heading, Text } from "@chakra-ui/react";
 
-export default function ForumWa() {
-  const threads = [
-    {
-      id: "1",
-      title: "How I transitioned from junior to mid-level developer",
-      excerpt:
-        "Sharing lessons, mistakes, and habits that helped me grow faster in my career...",
-      author: "Susan",
-      createdAt: "2 hours ago",
-      repliesCount: 12,
-      votes: 34,
-      tag: "Career",
-    },
-    {
-      id: "2",
-      title: "Best resources to truly understand system design",
-      excerpt:
-        "Most tutorials are shallow. Here are the ones that actually helped me think like an engineer...",
-      author: "Ada",
-      createdAt: "1 day ago",
-      repliesCount: 8,
-      votes: 21,
-      tag: "Backend",
-    },
-    {
-      id: "3",
-      title: "What does growth look like after your first dev job?",
-      excerpt:
-        "Is it about salary, impact, learning curve, or something else entirely?",
-      author: "Samuel",
-      createdAt: "3 days ago",
-      repliesCount: 18,
-      votes: 42,
-      tag: "Mindset",
-    },
-  ];
+async function getThreads() {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/forum/threads`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) return [];
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+
+export default async function ForumWa() {
+  const threads = await getThreads();
 
   return (
     <main className="min-h-screen bg-black text-white">
       <Box maxW="900px" mx="auto" px={4} py={14}>
-        {/* Page Header */}
+        {/* Header */}
         <Box mb={12}>
           <Heading size="lg" mb={3}>
             ProGrowing Forum
           </Heading>
-          <Text fontSize="sm" color="gray.400" maxW="600px">
+          <Text fontSize="sm" color="gray.400">
             Learn publicly. Share honestly. Grow intentionally.
           </Text>
         </Box>
 
-        {/* Thread Feed */}
-        <Box className="space-y-6">
-          {threads.map((thread) => (
-            <ThreadCard key={thread.id} {...thread} />
-          ))}
-        </Box>
+        {/* Feed */}
+        {threads.length === 0 ? (
+          <Box
+            py={20}
+            textAlign="center"
+            color="gray.500"
+            border="1px dashed #C69DD230"
+            borderRadius="xl"
+          >
+            <Text fontSize="sm">
+              No threads yet. Be the first to start a discussion.
+            </Text>
+          </Box>
+        ) : (
+          <ThreadList threads={threads} />
+        )}
       </Box>
     </main>
   );
 }
+
+
+
+

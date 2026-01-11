@@ -17,6 +17,14 @@ interface ThreadCardProps {
   tag?: string;
 }
 
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+
 export const ThreadCard = ({
   id,
   title,
@@ -78,8 +86,7 @@ export const ThreadCard = ({
           <div className="flex items-center gap-4 text-xs text-gray-500">
             <span className="text-gray-400">{author}</span>
             <span>•</span>
-            <span>{createdAt}</span>
-
+            <span>{formatDate(createdAt)}</span>
             <span className="flex items-center gap-1 ml-auto">
               <MessageCircle size={14} />
               {repliesCount}
