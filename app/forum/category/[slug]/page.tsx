@@ -1,5 +1,7 @@
 import { ThreadCard } from "@/components/forum/ThreadCard";
 import { Box, Heading, Text } from "@chakra-ui/react";
+import { CATEGORY } from "@/lib/constants/forum";
+import { notFound } from "next/navigation";
 
 interface CategoryPageProps {
   params: {
@@ -21,18 +23,23 @@ async function getCategoryThreads(slug: string) {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = params;
+
+  // 🔒 Validate category
+  const category = CATEGORY.find((c) => c.value === slug);
+  if (!category) notFound();
+
   const threads = await getCategoryThreads(slug);
 
   return (
     <Box>
       {/* Header */}
       <Box mb={10}>
-        <Heading size="lg" mb={2} className="capitalize">
-          {slug} discussions
+        <Heading size="lg" mb={2}>
+          {category.label} discussions
         </Heading>
         <Text fontSize="sm" color="gray.400" maxW="600px">
-          Threads focused on {slug}. Learn from shared experiences and
-          practical insights.
+          Threads focused on {category.label.toLowerCase()}. Learn from shared
+          experiences and practical insights.
         </Text>
       </Box>
 

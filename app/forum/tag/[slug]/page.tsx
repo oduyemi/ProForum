@@ -1,6 +1,7 @@
-import { ThreadList } from "@/components/forum/ThreadList";
+import { ThreadCard } from "@/components/forum/ThreadCard";
 import { Box, Heading, Text } from "@chakra-ui/react";
-
+import { TAG } from "@/lib/constants/forum";
+import { notFound } from "next/navigation";
 
 interface TagPageProps {
   params: {
@@ -8,36 +9,59 @@ interface TagPageProps {
   };
 }
 
-export default function TagPage({ params }: TagPageProps) {
+async function getTagThreads(slug: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_APP_URL}/api/forum/threads?tag=${slug}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) return [];
+  const data = await res.json();
+
+  return Array.isArray(data) ? data : [];
+}
+
+export default async function TagPage({ params }: TagPageProps) {
   const { slug } = params;
 
-  // Mock data
-  const threads = [
-    {
-      id: "1",
-      title: "What does growth look like after your first dev job?",
-      excerpt:
-        "Is it about salary, impact, learning curve, or something else entirely?",
-      author: "Samuel",
-      createdAt: "3 days ago",
-      repliesCount: 18,
-      votes: 42,
-      tag: slug,
-    },
-  ];
+  // 🔒 Validate tag
+  const tag = TAG.find((t) => t.value === slug);
+  if (!tag) notFound();
+
+  const threads = await getTagThreads(slug);
 
   return (
     <Box>
+      {/* Header */}
       <Box mb={10}>
         <Heading size="lg" mb={2}>
-          #{slug}
+          #{tag.label}
         </Heading>
         <Text fontSize="sm" color="gray.400">
-          Conversations tagged with “{slug}”
+          Conversations tagged with “{tag.label}”
         </Text>
       </Box>
 
-      <ThreadList threads={threads} />
+      {/* Content */}
+      {threads.length === 0 ? (
+        <Box
+          py={20}
+          textAlign="center"
+          color="gray.500"
+          border="1px dashed #C69DD230"
+          borderRadius="xl"
+        >
+          <Text fontSize="sm">
+            No discussions yet for this tag.
+          </Text>
+        </Box>
+      ) : (
+        <Box className="space-y-6">
+          {threads.map((thread) => (
+            <ThreadCard key={thread.id} {...thread} />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

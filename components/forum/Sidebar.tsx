@@ -1,12 +1,5 @@
 import Link from "next/link";
-
-
-
-const categories = ["career", "backend", "frontend", "mindset"];
-const tags = ["growth", "mentorship", "system-design"];
-
-
-
+import { CATEGORY, TAG } from "@/lib/constants/forum";
 
 export const ForumSidebar = () => {
   return (
@@ -16,14 +9,15 @@ export const ForumSidebar = () => {
         <h3 className="text-sm font-semibold text-gray-300 mb-3">
           Categories
         </h3>
+
         <ul className="space-y-2 text-sm">
-          {categories.map((cat) => (
-            <li key={cat}>
+          {CATEGORY.map((category) => (
+            <li key={category.value}>
               <Link
-                href={`/forum/category/${cat}`}
-                className="text-gray-400 hover:text-yellow-400"
+                href={`/forum/category/${category.value}`}
+                className="text-gray-400 hover:text-yellow-400 transition-colors"
               >
-                {cat}
+                {category.label}
               </Link>
             </li>
           ))}
@@ -35,19 +29,22 @@ export const ForumSidebar = () => {
         <h3 className="text-sm font-semibold text-gray-300 mb-3">
           Popular tags
         </h3>
+
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {TAG.map((tag) => (
             <Link
-              key={tag}
-              href={`/forum/tag/${tag}`}
+              key={tag.value}
+              href={`/forum/tag/${tag.value}`}
               className="
                 px-3 py-1 text-xs rounded-full
                 bg-[#C69DD215]
                 text-[#C69DD2]
                 hover:bg-[#C69DD230]
+                transition-colors
               "
+              aria-label={`View threads tagged ${tag.label}`}
             >
-              #{tag}
+              #{tag.label}
             </Link>
           ))}
         </div>
